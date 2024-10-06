@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Array From Range Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f4f8;
+      }
+
+      .visualizer-container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        max-width: 400px;
+        width: 100%;
+      }
+
+      h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 1.5rem;
+        color: #333;
+      }
+
+      .slider-container {
+        margin-bottom: 20px;
+      }
+
+      .slider-container label {
+        font-weight: bold;
+        margin-bottom: 5px;
+        display: block;
+      }
+
+      .slider-value {
+        font-size: 1rem;
+        margin-bottom: 10px;
+        text-align: center;
+      }
+
+      input[type="range"] {
+        width: 100%;
+      }
+
+      .array-output {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .array-item {
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 1rem;
+        min-width: 30px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="visualizer-container">
+      <h2>Array From Range Visualizer</h2>
+
+      <div class="slider-container">
+        <label for="minSlider">Min Value: <span id="minValue">1</span></label>
+        <input type="range" id="minSlider" min="1" max="10" value="1" />
+      </div>
+
+      <div class="slider-container">
+        <label for="maxSlider">Max Value: <span id="maxValue">4</span></label>
+        <input type="range" id="maxSlider" min="1" max="10" value="4" />
+      </div>
+
+      <div class="array-output" id="arrayOutput">
+        <!-- Array items will appear here -->
+      </div>
+    </div>
+
+    <script>
+      const minSlider = document.getElementById("minSlider");
+      const maxSlider = document.getElementById("maxSlider");
+      const minValueLabel = document.getElementById("minValue");
+      const maxValueLabel = document.getElementById("maxValue");
+      const arrayOutput = document.getElementById("arrayOutput");
+
+      function arrayFromRange(min, max) {
+        const output = [];
+        for (let i = min; i <= max; i++) {
+          output.push(i);
+        }
+        return output;
+      }
+
+      function updateVisualizer() {
+        const min = parseInt(minSlider.value);
+        const max = parseInt(maxSlider.value);
+
+        // Update displayed values for the sliders
+        minValueLabel.textContent = min;
+        maxValueLabel.textContent = max;
+
+        // Prevent the min slider from going beyond the max and vice versa
+        if (min > max) {
+          maxSlider.value = min;
+          maxValueLabel.textContent = min;
+        }
+
+        // Generate and display the array
+        const array = arrayFromRange(min, max);
+        arrayOutput.innerHTML = ""; // Clear previous output
+
+        array.forEach((num) => {
+          const item = document.createElement("div");
+          item.className = "array-item";
+          item.textContent = num;
+          arrayOutput.appendChild(item);
+        });
+      }
+
+      // Initialize the visualizer
+      minSlider.addEventListener("input", updateVisualizer);
+      maxSlider.addEventListener("input", updateVisualizer);
+
+      // Initial call to set the default array
+      updateVisualizer();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Movie Filter Visualization</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f5f5f5;
+        margin: 0;
+      }
+
+      .visualizer-container {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        width: 100%;
+      }
+
+      h2 {
+        text-align: center;
+        font-size: 1.5rem;
+        margin-bottom: 20px;
+      }
+
+      .controls {
+        display: flex;
+        gap: 10px;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .slider-container {
+        flex: 1;
+      }
+
+      .slider-container label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+      }
+
+      input[type="range"] {
+        width: 100%;
+      }
+
+      .buttons {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+      }
+
+      .chart-container {
+        margin-top: 20px;
+      }
+
+      button {
+        padding: 10px 20px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      ul {
+        list-style-type: disc;
+        padding-left: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="visualizer-container">
+      <h2>Movie Filter Visualization</h2>
+
+      <div class="controls">
+        <div class="slider-container">
+          <label for="yearSlider">Year: <span id="yearValue">2018</span></label>
+          <input
+            type="range"
+            id="yearSlider"
+            min="2017"
+            max="2019"
+            value="2018"
+            step="1"
+          />
+        </div>
+        <div class="slider-container">
+          <label for="ratingSlider"
+            >Minimum Rating: <span id="ratingValue">4</span></label
+          >
+          <input
+            type="range"
+            id="ratingSlider"
+            min="0"
+            max="5"
+            value="4"
+            step="0.1"
+          />
+        </div>
+      </div>
+
+      <div class="buttons">
+        <button id="toggleSort">Sort Order: Descending</button>
+        <button id="toggleTitles">Show Titles</button>
+      </div>
+
+      <div class="chart-container">
+        <canvas id="movieChart" width="400" height="200"></canvas>
+      </div>
+
+      <div id="titlesContainer" style="display: none">
+        <h3>Filtered Titles:</h3>
+        <ul id="filteredTitles"></ul>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      const movies = [
+        { title: "a", year: 2018, rating: 4.5 },
+        { title: "b", year: 2018, rating: 4.7 },
+        { title: "c", year: 2018, rating: 3 },
+        { title: "d", year: 2017, rating: 4.5 },
+        { title: "e", year: 2018, rating: 3.8 },
+        { title: "f", year: 2019, rating: 4.2 },
+      ];
+
+      const yearSlider = document.getElementById("yearSlider");
+      const ratingSlider = document.getElementById("ratingSlider");
+      const yearValue = document.getElementById("yearValue");
+      const ratingValue = document.getElementById("ratingValue");
+      const toggleSortButton = document.getElementById("toggleSort");
+      const toggleTitlesButton = document.getElementById("toggleTitles");
+      const titlesContainer = document.getElementById("titlesContainer");
+      const filteredTitles = document.getElementById("filteredTitles");
+
+      let sortOrder = "desc";
+      let showTitles = false;
+      let chart;
+
+      function filterMovies() {
+        const year = parseInt(yearSlider.value);
+        const minRating = parseFloat(ratingSlider.value);
+
+        return movies
+          .filter((m) => m.year === year && m.rating >= minRating)
+          .sort((a, b) =>
+            sortOrder === "desc" ? b.rating - a.rating : a.rating - b.rating
+          );
+      }
+
+      function updateChart() {
+        const filteredMovies = filterMovies();
+        const titles = filteredMovies.map((m) => m.title);
+        const ratings = filteredMovies.map((m) => m.rating);
+
+        if (chart) chart.destroy();
+
+        const ctx = document.getElementById("movieChart").getContext("2d");
+        chart = new Chart(ctx, {
+          type: "bar",
+          data: {
+            labels: titles,
+            datasets: [
+              {
+                label: "Movie Ratings",
+                data: ratings,
+                backgroundColor: "rgba(54, 162, 235, 0.6)",
+                borderColor: "rgba(54, 162, 235, 1)",
+                borderWidth: 1,
+              },
+            ],
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 5,
+              },
+            },
+          },
+        });
+
+        if (showTitles) {
+          titlesContainer.style.display = "block";
+          filteredTitles.innerHTML = "";
+          titles.forEach((title) => {
+            const li = document.createElement("li");
+            li.textContent = title;
+            filteredTitles.appendChild(li);
+          });
+        } else {
+          titlesContainer.style.display = "none";
+        }
+      }
+
+      yearSlider.addEventListener("input", () => {
+        yearValue.textContent = yearSlider.value;
+        updateChart();
+      });
+
+      ratingSlider.addEventListener("input", () => {
+        ratingValue.textContent = ratingSlider.value;
+        updateChart();
+      });
+
+      toggleSortButton.addEventListener("click", () => {
+        sortOrder = sortOrder === "desc" ? "asc" : "desc";
+        toggleSortButton.textContent = `Sort Order: ${
+          sortOrder === "desc" ? "Descending" : "Ascending"
+        }`;
+        updateChart();
+      });
+
+      toggleTitlesButton.addEventListener("click", () => {
+        showTitles = !showTitles;
+        toggleTitlesButton.textContent = showTitles
+          ? "Hide Titles"
+          : "Show Titles";
+        updateChart();
+      });
+
+      // Initial chart load
+      updateChart();
+    </script>
+  </body>
+</html>

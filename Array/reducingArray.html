@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reduce Method Visualizer</title>
+    <style>
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .number-box {
+        display: inline-block;
+        padding: 10px;
+        margin: 5px;
+        border: 1px solid gray;
+      }
+      .highlight {
+        background-color: #b3d9ff;
+        border-color: blue;
+      }
+      pre {
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 5px;
+      }
+      button {
+        padding: 10px 15px;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+      .add-input {
+        width: 80px;
+        padding: 5px;
+        margin-right: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Reduce Method Visualizer</h2>
+
+      <div>
+        <h3>Box of Numbers (Array):</h3>
+        <div id="number-boxes"></div>
+        <input
+          type="number"
+          id="new-number"
+          class="add-input"
+          placeholder="Add a number"
+        />
+        <button onclick="addNumber()">Add</button>
+      </div>
+
+      <div>
+        <h3>Combining Machine (Reduce Function):</h3>
+        <pre>
+function add(total, currentNumber) { return total + currentNumber; }</pre
+        >
+      </div>
+
+      <div>
+        <button onclick="stepBackward()">Step Backward</button>
+        <button onclick="stepForward()">Step Forward</button>
+        <button onclick="resetVisualization()">Reset</button>
+      </div>
+
+      <div>
+        <h3>Reduction Process:</h3>
+        <div id="reduction-process"></div>
+      </div>
+
+      <div>
+        <h3>Final Result (Sum of all numbers):</h3>
+        <pre id="final-result"></pre>
+      </div>
+    </div>
+
+    <script>
+      let numbers = [1, 2, 3, 4];
+      let currentStep = -1;
+
+      function add(total, currentNumber) {
+        return total + currentNumber;
+      }
+
+      function renderNumberBoxes() {
+        const container = document.getElementById("number-boxes");
+        container.innerHTML = "";
+        numbers.forEach((num, index) => {
+          const box = document.createElement("div");
+          box.textContent = num;
+          box.className =
+            "number-box" + (index <= currentStep ? " highlight" : "");
+          container.appendChild(box);
+        });
+      }
+
+      function renderReductionProcess() {
+        const processContainer = document.getElementById("reduction-process");
+        processContainer.innerHTML = "";
+        if (currentStep >= 0) {
+          const partialSum = numbers.slice(0, currentStep + 1).reduce(add);
+          const nextNum = numbers[currentStep + 1];
+          const newSum = numbers.slice(0, currentStep + 2).reduce(add);
+
+          processContainer.innerHTML = `
+          <div class="number-box highlight">${partialSum}</div>
+          <span> + </span>
+          <div class="number-box">${nextNum}</div>
+          <span> = </span>
+          <div class="number-box highlight">${newSum}</div>
+        `;
+        }
+      }
+
+      function renderFinalResult() {
+        const finalResultContainer = document.getElementById("final-result");
+        const sum = numbers.reduce(add);
+        finalResultContainer.textContent = `const sum = numbers.reduce(add);\nconsole.log(sum); // Output: ${sum}`;
+      }
+
+      function stepForward() {
+        if (currentStep < numbers.length - 1) {
+          currentStep++;
+          renderNumberBoxes();
+          renderReductionProcess();
+        }
+      }
+
+      function stepBackward() {
+        if (currentStep > -1) {
+          currentStep--;
+          renderNumberBoxes();
+          renderReductionProcess();
+        }
+      }
+
+      function resetVisualization() {
+        currentStep = -1;
+        renderNumberBoxes();
+        document.getElementById("reduction-process").innerHTML = "";
+      }
+
+      function addNumber() {
+        const newNumberInput = document.getElementById("new-number");
+        const newNumber = parseInt(newNumberInput.value);
+        if (!isNaN(newNumber)) {
+          numbers.push(newNumber);
+          newNumberInput.value = "";
+          resetVisualization();
+        }
+      }
+
+      // Initial render
+      renderNumberBoxes();
+      renderFinalResult();
+    </script>
+  </body>
+</html>
