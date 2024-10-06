@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Switch-Case Interactive Demo</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+      .card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 300px;
+        text-align: center;
+      }
+      select,
+      input[type="number"] {
+        width: 60%;
+        padding: 5px;
+        margin-bottom: 15px;
+      }
+      button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .result {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #e7f3fe;
+        border-left: 6px solid #2196f3;
+      }
+      pre {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 15px;
+        overflow-x: auto; /* Allow horizontal scrolling */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2 class="text-2xl font-bold">Switch-Case Interactive Demo</h2>
+
+      <select id="example-select">
+        <option value="" disabled selected>Select an example</option>
+        <option value="day">Day of Week Example</option>
+        <option value="grade">Grade Example</option>
+      </select>
+
+      <div id="day-input" style="display: none">
+        <label for="day">Day (1-7):</label>
+        <input id="day" type="number" min="1" max="7" />
+        <button id="run-day">Run</button>
+      </div>
+
+      <div id="grade-input" style="display: none">
+        <label for="grade">Grade:</label>
+        <select id="grade">
+          <option value="" disabled selected>Select Grade</option>
+          <option value="A">A</option>
+          <option value="B">B</option>
+          <option value="C">C</option>
+          <option value="D">D</option>
+          <option value="F">F</option>
+        </select>
+        <button id="run-grade">Run</button>
+      </div>
+
+      <div id="result" class="result" style="display: none"></div>
+
+      <!-- Button to show code -->
+      <button id="show-code-button">Show Code</button>
+
+      <!-- Preformatted text to display code -->
+      <pre id="code-display" style="display: none"></pre>
+    </div>
+
+    <script>
+      const exampleSelect = document.getElementById("example-select");
+      const dayInput = document.getElementById("day-input");
+      const gradeInput = document.getElementById("grade-input");
+      const dayField = document.getElementById("day");
+      const gradeField = document.getElementById("grade");
+      const runDayButton = document.getElementById("run-day");
+      const runGradeButton = document.getElementById("run-grade");
+      const resultDiv = document.getElementById("result");
+      const showCodeButton = document.getElementById("show-code-button");
+      const codeDisplay = document.getElementById("code-display");
+
+      exampleSelect.addEventListener("change", (e) => {
+        if (e.target.value === "day") {
+          dayInput.style.display = "block";
+          gradeInput.style.display = "none";
+        } else if (e.target.value === "grade") {
+          dayInput.style.display = "none";
+          gradeInput.style.display = "block";
+        }
+        resultDiv.style.display = "none"; // Reset result display
+        codeDisplay.style.display = "none"; // Hide code display
+      });
+
+      runDayButton.addEventListener("click", () => {
+        const day = parseInt(dayField.value);
+        let dayName;
+
+        switch (day) {
+          case 1:
+            dayName = "Monday";
+            break;
+          case 2:
+            dayName = "Tuesday";
+            break;
+          case 3:
+            dayName = "Wednesday";
+            break;
+          case 4:
+            dayName = "Thursday";
+            break;
+          case 5:
+            dayName = "Friday";
+            break;
+          case 6:
+            dayName = "Saturday";
+            break;
+          case 7:
+            dayName = "Sunday";
+            break;
+          default:
+            dayName = "Invalid day";
+        }
+
+        resultDiv.textContent = `Day ${day} is ${dayName}`;
+        resultDiv.style.display = "block";
+      });
+
+      runGradeButton.addEventListener("click", () => {
+        const grade = gradeField.value;
+        let message;
+
+        switch (grade) {
+          case "A":
+            message = "Excellent work!";
+            break;
+          case "B":
+            message = "Good job!";
+            break;
+          case "C":
+            message = "Satisfactory.";
+            break;
+          case "D":
+            message = "Needs improvement.";
+            break;
+          case "F":
+            message = "Failed. Please see the instructor.";
+            break;
+          default:
+            message = "Invalid grade";
+        }
+
+        resultDiv.textContent = `Grade ${grade}: ${message}`;
+        resultDiv.style.display = "block";
+      });
+
+      showCodeButton.addEventListener("click", () => {
+        const codeSnippetDay = `const dayInputHandler = () => {
+    const day = parseInt(dayField.value);
+    let dayName;
+
+    switch (day) {
+        case 1:
+          dayName = "Monday";
+          break; 
+          //... other cases
+          default:
+          dayName = "Invalid day";
+      }
+      return \`Day \${day} is \${dayName}\`;
+};`;
+
+        const codeSnippetGrade = `const gradeInputHandler = () => {
+      const grade = gradeField.value; 
+      let message;
+
+      switch (grade) {
+          case 'A':
+              message = "Excellent work!";
+              break; 
+              //... other cases
+              default:
+              message = "Invalid grade";
+      }
+      return \`Grade \${grade}: \${message}\`;
+};`;
+
+        codeDisplay.textContent = `// Day Example Code Snippet\n${codeSnippetDay}\n\n// Grade Example Code Snippet\n${codeSnippetGrade}`;
+
+        codeDisplay.style.display = "block"; // Show the code display
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>For Loop Interactive Demo</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+      .card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 300px;
+        text-align: center;
+      }
+      select,
+      input[type="number"],
+      input[type="text"] {
+        width: 60%;
+        padding: 5px;
+        margin-bottom: 15px;
+      }
+      button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .result {
+        margin-top: 15px;
+        padding: 10px;
+        background-color: #e7f3fe;
+        border-left: 6px solid #2196f3;
+      }
+      pre {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 15px;
+        overflow-x: auto; /* Allow horizontal scrolling */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2 class="text-2xl font-bold">For Loop Interactive Demo</h2>
+
+      <select id="example-select">
+        <option value="" disabled selected>Select an example</option>
+        <option value="count">Counting Example</option>
+        <option value="fruit">Fruit List Example</option>
+      </select>
+
+      <div id="count-input" style="display: none">
+        <label for="start">Start:</label>
+        <input id="start" type="number" min="1" value="1" />
+
+        <label for="end">End:</label>
+        <input id="end" type="number" min="1" value="5" />
+
+        <label for="step">Step:</label>
+        <input id="step" type="number" min="1" value="1" />
+
+        <button id="run-count">Run Count Example</button>
+      </div>
+
+      <div id="fruit-input" style="display: none">
+        <label for="fruits">Fruits:</label>
+        <input
+          id="fruits"
+          type="text"
+          value="apple,banana,cherry,date,elderberry"
+        />
+
+        <button id="run-fruit">Run Fruit Example</button>
+      </div>
+
+      <div id="result" class="result" style="display: none"></div>
+
+      <!-- Button to show code -->
+      <button id="show-code-button">Show Code</button>
+
+      <!-- Preformatted text to display code -->
+      <pre id="code-display" style="display: none"></pre>
+    </div>
+
+    <script>
+      const exampleSelect = document.getElementById("example-select");
+      const countInput = document.getElementById("count-input");
+      const fruitInput = document.getElementById("fruit-input");
+      const startField = document.getElementById("start");
+      const endField = document.getElementById("end");
+      const stepField = document.getElementById("step");
+      const fruitsField = document.getElementById("fruits");
+      const runCountButton = document.getElementById("run-count");
+      const runFruitButton = document.getElementById("run-fruit");
+      const resultDiv = document.getElementById("result");
+      const showCodeButton = document.getElementById("show-code-button");
+      const codeDisplay = document.getElementById("code-display");
+
+      exampleSelect.addEventListener("change", (e) => {
+        if (e.target.value === "count") {
+          countInput.style.display = "block";
+          fruitInput.style.display = "none";
+        } else if (e.target.value === "fruit") {
+          countInput.style.display = "none";
+          fruitInput.style.display = "block";
+        }
+        resultDiv.style.display = "none"; // Reset result display
+        codeDisplay.style.display = "none"; // Hide code display
+      });
+
+      runCountButton.addEventListener("click", () => {
+        const start = parseInt(startField.value);
+        const end = parseInt(endField.value);
+        const step = parseInt(stepField.value);
+
+        let output = [];
+        for (let i = start; i <= end; i += step) {
+          output.push(i);
+        }
+
+        resultDiv.textContent = `Counting: ${output.join(", ")}`;
+        resultDiv.style.display = "block";
+      });
+
+      runFruitButton.addEventListener("click", () => {
+        const fruits = fruitsField.value
+          .split(",")
+          .map((fruit) => fruit.trim());
+
+        let output = [];
+        for (let i = 0; i < fruits.length; i++) {
+          output.push(`${i + 1}. ${fruits[i]}`);
+        }
+
+        resultDiv.textContent = `Fruits List:\n${output.join("\n")}`;
+        resultDiv.style.display = "block";
+      });
+
+      showCodeButton.addEventListener("click", () => {
+        const codeSnippetCount = `// Count Example Code Snippet
+const runCountExample = () => {
+    let output = [];
+    for (let i = start; i <= end; i += step) {
+      output.push(i);
+    }
+};`;
+
+        const codeSnippetFruit = `// Fruit Example Code Snippet
+const runFruitExample = () => {
+      const fruitsArray = fruits.split(',').map(fruit => fruit.trim());
+      let output = [];
+      for (let i = 0; i < fruitsArray.length; i++) {
+          output.push(\`\${i + 1}. \${fruitsArray[i]}\`);
+      }
+};`;
+
+        codeDisplay.textContent = `// Counting Example Code\n${codeSnippetCount}\n\n// Fruit List Example Code\n${codeSnippetFruit}`;
+
+        codeDisplay.style.display = "block"; // Show the code display
+      });
+    </script>
+  </body>
+</html>

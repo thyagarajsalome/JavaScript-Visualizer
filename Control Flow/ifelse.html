@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Grading System Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+      }
+      .card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 300px;
+        text-align: center;
+      }
+      input[type="number"] {
+        width: 60%;
+        padding: 5px;
+        margin-bottom: 15px;
+      }
+      button {
+        padding: 10px 15px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      pre {
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        padding: 10px;
+        margin-top: 15px;
+        overflow-x: auto; /* Allow horizontal scrolling */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Grading System</h2>
+      <input
+        type="number"
+        id="score-input"
+        placeholder="Enter score (0-100)"
+        min="0"
+        max="100"
+      />
+      <button id="submit-button">Get Grade</button>
+      <p id="result" class="text-2xl font-semibold"></p>
+
+      <button id="show-code-button">Show Code</button>
+      <pre id="code-display" style="display: none"></pre>
+    </div>
+
+    <script>
+      const scoreInput = document.getElementById("score-input");
+      const submitButton = document.getElementById("submit-button");
+      const result = document.getElementById("result");
+      const showCodeButton = document.getElementById("show-code-button");
+      const codeDisplay = document.getElementById("code-display");
+
+      const getGrade = (score) => {
+        let grade;
+
+        if (score >= 90 && score <= 100) {
+          grade = "A";
+        } else if (score >= 80 && score < 90) {
+          grade = "B";
+        } else if (score >= 70 && score < 80) {
+          grade = "C";
+        } else if (score >= 60 && score < 70) {
+          grade = "D";
+        } else if (score < 60 && score >= 0) {
+          grade = "F";
+        } else {
+          grade = "Invalid score"; // Handle invalid input
+        }
+
+        return grade;
+      };
+
+      submitButton.addEventListener("click", () => {
+        const numericScore = parseInt(scoreInput.value);
+        const gradeResult = getGrade(numericScore);
+
+        result.textContent = `The student's grade is: ${gradeResult}`;
+      });
+
+      showCodeButton.addEventListener("click", () => {
+        const codeSnippet = `
+const getGrade = (score) => {
+    let grade;
+
+    if (score >= 90 && score <= 100) {
+        grade = 'A';
+    } else if (score >= 80 && score < 90) {
+        grade = 'B';
+    } else if (score >= 70 && score < 80) {
+        grade = 'C';
+    } else if (score >= 60 && score < 70) {
+        grade = 'D';
+    } else if (score < 60 && score >= 0) {
+        grade = 'F';
+    } else {
+        grade = 'Invalid score'; // Handle invalid input
+    }
+
+    return grade;
+};`;
+
+        codeDisplay.textContent = codeSnippet.trim();
+        codeDisplay.style.display = "block"; // Show the code display
+      });
+    </script>
+  </body>
+</html>
