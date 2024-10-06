@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Functions as Objects in JavaScript Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        background-color: #f0f0f0;
+      }
+
+      #visualizer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 600px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      button {
+        margin: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .output {
+        width: 100%;
+        background: #e0e0e0;
+        padding: 10px;
+        border-radius: 5px;
+        min-height: 100px;
+        margin-top: 10px;
+        text-align: left;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>JavaScript Functions are Objects Visualizer</h1>
+    <div id="visualizer">
+      <button onclick="createFunction()">Create a Function Object</button>
+      <button onclick="addProperty()">Add Property to Function</button>
+      <button onclick="executeFunction()">Execute the Function</button>
+      <button onclick="showProperties()">Show Properties</button>
+      <div class="output" id="output"></div>
+    </div>
+    <script>
+      let myFunction;
+
+      function createFunction() {
+        // Creating a function and storing it in a variable
+        myFunction = function () {
+          return "Hello! I am a function.";
+        };
+        document.getElementById("output").innerText =
+          "Function created. Try adding properties!";
+      }
+
+      function addProperty() {
+        if (!myFunction) {
+          alert("Create the function first!");
+          return;
+        }
+        // Adding a property to the function
+        myFunction.description = "This is a function that returns a greeting.";
+        document.getElementById("output").innerText =
+          'Property added: description = "' + myFunction.description + '"';
+      }
+
+      function executeFunction() {
+        if (!myFunction) {
+          alert("Create the function first!");
+          return;
+        }
+        // Executing the function
+        let result = myFunction();
+        document.getElementById("output").innerText =
+          'Function executed. Result: "' + result + '"';
+      }
+
+      function showProperties() {
+        if (!myFunction) {
+          alert("Create the function first!");
+          return;
+        }
+        // Showing the properties of the function
+        let props = "Properties of myFunction:\n";
+        for (let prop in myFunction) {
+          props += prop + ": " + myFunction[prop] + "\n";
+        }
+        document.getElementById("output").innerText =
+          props || "No properties added yet.";
+      }
+    </script>
+  </body>
+</html>

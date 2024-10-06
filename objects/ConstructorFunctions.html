@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Person Constructor Visualization</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+      }
+      .container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      .title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 16px;
+      }
+      .button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        margin-bottom: 16px;
+      }
+      .button:hover {
+        background-color: #0056b3;
+      }
+      .card {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 16px;
+      }
+      .console-output {
+        background-color: #e9ecef;
+        padding: 8px;
+        border-radius: 4px;
+      }
+      .form-group {
+        margin-bottom: 10px;
+      }
+      label {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      input[type="text"],
+      input[type="number"] {
+        width: calc(100% - 16px);
+        padding: 8px;
+        margin-top: 4px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .greet-button {
+        background-color: #28a745;
+        color: white;
+        margin-top: 10px;
+      }
+      .greet-button:hover {
+        background-color: #218838;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="title">Person Constructor Visualization</h2>
+
+      <div class="mb-4 flex space-x-2">
+        <input type="text" placeholder="Name" id="nameInput" />
+        <input type="number" placeholder="Age" id="ageInput" />
+        <button class="button" id="createPersonButton">Create Person</button>
+      </div>
+
+      <div id="personCardsContainer"></div>
+
+      <div class="console-output">
+        <h3>Console Output:</h3>
+        <div id="outputList"></div>
+      </div>
+    </div>
+
+    <script>
+      let people = [];
+      let consoleOutput = [];
+
+      function Person(name, age) {
+        this.name = name;
+        this.age = age;
+        this.greet = () => {
+          updateConsole(`Hello, my name is ${this.name}!`);
+        };
+      }
+
+      const createPerson = () => {
+        const nameInput = document.getElementById("nameInput");
+        const ageInput = document.getElementById("ageInput");
+        const newName = nameInput.value;
+        const newAge = ageInput.value;
+
+        if (newName && newAge) {
+          const newPerson = new Person(newName, parseInt(newAge));
+          people.push(newPerson);
+          nameInput.value = "";
+          ageInput.value = "";
+          updateConsole(`Created: Person "${newName}"`);
+          renderPeople();
+        }
+      };
+
+      const updatePersonProperty = (index, property, value) => {
+        people[index][property] = value;
+        renderPeople();
+      };
+
+      const updateConsole = (message) => {
+        consoleOutput.push(message);
+        const outputList = document.getElementById("outputList");
+        const outputDiv = document.createElement("div");
+        outputDiv.textContent = message;
+        outputList.appendChild(outputDiv);
+      };
+
+      const renderPeople = () => {
+        const personCardsContainer = document.getElementById(
+          "personCardsContainer"
+        );
+        personCardsContainer.innerHTML = ""; // Clear the container
+
+        people.forEach((person, index) => {
+          const cardDiv = document.createElement("div");
+          cardDiv.className = "card";
+          cardDiv.innerHTML = `
+                    <h3>Person ${index + 1}</h3>
+                    <div class="form-group">
+                        <label>Name:</label>
+                        <input 
+                            type="text" 
+                            value="${person.name}" 
+                            oninput="updatePersonProperty(${index}, 'name', this.value)"
+                            onchange="updatePersonProperty(${index}, 'name', this.value)"
+                        />
+                    </div>
+                    <div class="form-group">
+                        <label>Age:</label>
+                        <input 
+                            type="number" 
+                            value="${person.age}" 
+                            oninput="updatePersonProperty(${index}, 'age', this.value)"
+                            onchange="updatePersonProperty(${index}, 'age', this.value)"
+                        />
+                    </div>
+                    <button class="button greet-button" onclick="people[${index}].greet()">Greet</button>
+                `;
+          personCardsContainer.appendChild(cardDiv);
+        });
+      };
+
+      document
+        .getElementById("createPersonButton")
+        .addEventListener("click", createPerson);
+    </script>
+  </body>
+</html>

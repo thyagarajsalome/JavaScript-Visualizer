@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Car Manufacturing Visualization</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+      }
+      .container {
+        padding: 20px;
+        max-width: 1200px;
+        margin: auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      .title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 16px;
+      }
+      .button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+        margin-bottom: 16px;
+      }
+      .button:hover {
+        background-color: #0056b3;
+      }
+      .card {
+        background: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        padding: 10px;
+        margin-bottom: 16px;
+      }
+      .console-output {
+        background-color: #e9ecef;
+        padding: 8px;
+        border-radius: 4px;
+      }
+      .form-group {
+        margin-bottom: 10px;
+      }
+      label {
+        display: block;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      input[type="text"],
+      input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        margin-top: 4px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .sound-button {
+        background-color: #28a745;
+        color: white;
+      }
+      .sound-button:hover {
+        background-color: #218838;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="title">Car Manufacturing Visualization</h2>
+
+      <button class="button" id="manufactureCarButton">
+        Manufacture New Car
+      </button>
+
+      <div id="carCardsContainer"></div>
+
+      <div class="console-output">
+        <h3>Console Output:</h3>
+        <div id="outputList"></div>
+      </div>
+    </div>
+
+    <script>
+      let cars = [];
+      let carCount = 0;
+
+      const manufactureCar = () => {
+        const newCar = {
+          id: carCount + 1,
+          carArea: 1200,
+          carHeight: 900,
+          carColor: "red",
+          carNumber: Math.floor(1000 + Math.random() * 9000),
+          carOwner: `Owner${carCount + 1}`,
+          isRegistered: true,
+        };
+        cars.push(newCar);
+        carCount++;
+        updateConsole(`Manufactured: Car ${newCar.id}`);
+        renderCars();
+      };
+
+      const updateCarProperty = (id, property, value) => {
+        cars = cars.map((car) =>
+          car.id === id ? { ...car, [property]: value } : car
+        );
+        renderCars();
+      };
+
+      const makeSound = (id) => {
+        updateConsole(`Car ${id}: broom`);
+      };
+
+      const updateConsole = (message) => {
+        const outputList = document.getElementById("outputList");
+        const outputDiv = document.createElement("div");
+        outputDiv.textContent = message;
+        outputList.appendChild(outputDiv);
+      };
+
+      const renderCars = () => {
+        const carCardsContainer = document.getElementById("carCardsContainer");
+        carCardsContainer.innerHTML = ""; // Clear the container
+
+        cars.forEach((car) => {
+          const cardDiv = document.createElement("div");
+          cardDiv.className = "card";
+          cardDiv.innerHTML = `
+                    <h3>Car ${car.id}</h3>
+                    <div class="form-group">
+                        <label>Area:</label>
+                        <input type="number" value="${
+                          car.carArea
+                        }" onchange="updateCarProperty(${
+            car.id
+          }, 'carArea', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Height:</label>
+                        <input type="number" value="${
+                          car.carHeight
+                        }" onchange="updateCarProperty(${
+            car.id
+          }, 'carHeight', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Color:</label>
+                        <input type="text" value="${
+                          car.carColor
+                        }" onchange="updateCarProperty(${
+            car.id
+          }, 'carColor', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>Number: ${car.carNumber}</label>
+                    </div>
+                    <div class="form-group">
+                        <label>Owner:</label>
+                        <input type="text" value="${
+                          car.carOwner
+                        }" onchange="updateCarProperty(${
+            car.id
+          }, 'carOwner', this.value)">
+                    </div>
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" ${
+                              car.isRegistered ? "checked" : ""
+                            } onchange="updateCarProperty(${
+            car.id
+          }, 'isRegistered', this.checked)">
+                            Registered
+                        </label>
+                    </div>
+                    <button class="button sound-button" onclick="makeSound(${
+                      car.id
+                    })">Make Sound</button>
+                `;
+          carCardsContainer.appendChild(cardDiv);
+        });
+      };
+
+      document
+        .getElementById("manufactureCarButton")
+        .addEventListener("click", manufactureCar);
+    </script>
+  </body>
+</html>

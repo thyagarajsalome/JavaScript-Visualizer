@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Shallow vs Deep Copy Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        background-color: #f0f0f0;
+      }
+
+      #visualizer {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 600px;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      button {
+        margin: 10px;
+        padding: 10px 20px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+      .output {
+        width: 100%;
+        background: #e0e0e0;
+        padding: 10px;
+        border-radius: 5px;
+        min-height: 150px;
+        margin-top: 10px;
+        text-align: left;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>JavaScript Shallow vs Deep Copy Visualizer</h1>
+    <div id="visualizer">
+      <button onclick="createObject()">Create Original Object</button>
+      <button onclick="shallowCopy()">Create Shallow Copy</button>
+      <button onclick="deepCopy()">Create Deep Copy</button>
+      <button onclick="modifyCopy()">Modify Copied Object</button>
+      <div class="output" id="output"></div>
+    </div>
+    <script>
+      let spaceship;
+      let copy;
+
+      function createObject() {
+        spaceship = {
+          wings: 2,
+          engines: "powerful",
+          cockpit: {
+            pilot: "Captain Max",
+          },
+        };
+        copy = null;
+        document.getElementById("output").innerText =
+          "Original object created:\n" + JSON.stringify(spaceship, null, 2);
+      }
+
+      function shallowCopy() {
+        if (!spaceship) {
+          alert("Create the original object first!");
+          return;
+        }
+        copy = { ...spaceship };
+        document.getElementById("output").innerText =
+          "Shallow copy created:\n" + JSON.stringify(copy, null, 2);
+      }
+
+      function deepCopy() {
+        if (!spaceship) {
+          alert("Create the original object first!");
+          return;
+        }
+        copy = JSON.parse(JSON.stringify(spaceship));
+        document.getElementById("output").innerText =
+          "Deep copy created:\n" + JSON.stringify(copy, null, 2);
+      }
+
+      function modifyCopy() {
+        if (!copy) {
+          alert("Create a copy first!");
+          return;
+        }
+        copy.wings = 4;
+        copy.cockpit.pilot = "Commander Alice";
+        document.getElementById("output").innerText =
+          "Modified copied object:\n" +
+          JSON.stringify(copy, null, 2) +
+          "\n\nOriginal object:\n" +
+          JSON.stringify(spaceship, null, 2);
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OOP Circle Visualization</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+      }
+
+      .container {
+        padding: 20px;
+        max-width: 400px;
+        margin: auto;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+
+      .title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 16px;
+      }
+
+      .form-group {
+        margin-bottom: 16px;
+      }
+
+      .circle-container {
+        border: 1px solid #ddd;
+        padding: 10px;
+        height: 200px;
+        position: relative;
+      }
+
+      .circle {
+        background-color: red;
+        border-radius: 50%;
+        position: absolute;
+        transition: all 0.3s;
+      }
+
+      .console-output {
+        background-color: #e9ecef;
+        padding: 8px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="title">OOP Circle Visualization</h2>
+
+      <div class="form-group">
+        <label>Radius: <span id="radiusValue">1</span></label>
+        <input
+          type="range"
+          id="radiusSlider"
+          min="1"
+          max="5"
+          step="0.1"
+          value="1"
+        />
+      </div>
+
+      <div class="form-group">
+        <label>X: <span id="xValue">1</span></label>
+        <input type="number" id="xInput" value="1" />
+      </div>
+
+      <div class="form-group">
+        <label>Y: <span id="yValue">1</span></label>
+        <input type="number" id="yInput" value="1" />
+      </div>
+
+      <div class="form-group">
+        <label>
+          <input type="checkbox" id="visibilityCheckbox" checked />
+          Is Visible
+        </label>
+      </div>
+
+      <button id="drawButton">Draw Circle</button>
+
+      <div id="circleContainer" class="circle-container">
+        <div id="circle" class="circle"></div>
+      </div>
+
+      <div id="consoleOutput" class="console-output">
+        <h3>Console Output:</h3>
+        <div id="outputList"></div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const circleContainer = document.getElementById("circleContainer");
+        const circle = document.getElementById("circle");
+        const radiusSlider = document.getElementById("radiusSlider");
+        const xInput = document.getElementById("xInput");
+        const yInput = document.getElementById("yInput");
+        const visibilityCheckbox =
+          document.getElementById("visibilityCheckbox");
+        const drawButton = document.getElementById("drawButton");
+        const radiusValue = document.getElementById("radiusValue");
+        const xValue = document.getElementById("xValue");
+        const yValue = document.getElementById("yValue");
+        const outputList = document.getElementById("outputList");
+
+        let circleState = {
+          radius: 1,
+          location: { x: 1, y: 1 },
+          isVisible: true,
+        };
+
+        radiusSlider.addEventListener("input", function () {
+          circleState.radius = parseFloat(this.value);
+          radiusValue.textContent = circleState.radius;
+        });
+
+        xInput.addEventListener("input", function () {
+          circleState.location.x = parseFloat(this.value);
+          xValue.textContent = circleState.location.x;
+        });
+
+        yInput.addEventListener("input", function () {
+          circleState.location.y = parseFloat(this.value);
+          yValue.textContent = circleState.location.y;
+        });
+
+        visibilityCheckbox.addEventListener("change", function () {
+          circleState.isVisible = this.checked;
+          drawCircle();
+        });
+
+        drawButton.addEventListener("click", function () {
+          outputList.innerHTML += "<div>draw</div>";
+          drawCircle();
+        });
+
+        function drawCircle() {
+          if (circleState.isVisible) {
+            circle.style.width = `${circleState.radius * 40}px`;
+            circle.style.height = `${circleState.radius * 40}px`;
+            circle.style.left = `${circleState.location.x * 10}%`;
+            circle.style.top = `${circleState.location.y * 10}%`;
+            circle.style.display = "block";
+          } else {
+            circle.style.display = "none";
+          }
+        }
+
+        drawCircle(); // Initial draw
+      });
+    </script>
+  </body>
+</html>

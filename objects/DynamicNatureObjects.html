@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Toolbox</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        margin: 0;
+        padding: 20px;
+      }
+      .container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      }
+      h2,
+      h3 {
+        margin: 10px 0;
+      }
+      .button {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 5px;
+      }
+      .add-button {
+        background-color: #28a745;
+        color: white;
+      }
+      .remove-button {
+        background-color: #dc3545;
+        color: white;
+      }
+      .upgrade-button {
+        background-color: #ffc107;
+        color: white;
+      }
+      .select-button {
+        background-color: #007bff;
+        color: white;
+      }
+      .toolbox-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .toolbox-output {
+        margin-top: 20px;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #e9ecef;
+      }
+      input {
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        width: calc(50% - 12px);
+        margin-right: 5px;
+      }
+      select {
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 5px;
+        width: calc(50% - 12px);
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Interactive Toolbox</h2>
+
+      <h3>Current Toolbox:</h3>
+      <div id="toolboxList"></div>
+
+      <h3>Add New Tool:</h3>
+      <div>
+        <input type="text" id="newToolName" placeholder="Tool name" />
+        <input type="text" id="newToolValue" placeholder="Tool value" />
+        <button class="button add-button" id="addToolButton">Add</button>
+      </div>
+
+      <h3>Upgrade Tool:</h3>
+      <div>
+        <select id="upgradeToolSelect">
+          <option value="">Select a tool</option>
+        </select>
+        <input type="text" id="upgradeToolValue" placeholder="New value" />
+        <button class="button upgrade-button" id="upgradeToolButton">
+          Upgrade
+        </button>
+      </div>
+
+      <div
+        class="toolbox-output"
+        id="selectedToolOutput"
+        style="display: none"
+      ></div>
+    </div>
+
+    <script>
+      const toolbox = {
+        hammer: "old hammer",
+        screwdriver: "Phillips",
+        explainScrewdriver: () => "This screwdriver is for Phillips screws!",
+      };
+
+      const renderToolbox = () => {
+        const toolboxList = document.getElementById("toolboxList");
+        toolboxList.innerHTML = "";
+        Object.entries(toolbox).forEach(([key, value]) => {
+          const div = document.createElement("div");
+          div.className = "toolbox-item";
+          div.innerHTML = `
+                    <span>${key}: ${
+            typeof value === "function" ? "[Function]" : value
+          }</span>
+                    <div>
+                        <button class="button select-button" onclick="selectTool('${key}')">Select</button>
+                        <button class="button remove-button" onclick="removeTool('${key}')">Remove</button>
+                    </div>
+                `;
+          toolboxList.appendChild(div);
+        });
+        updateUpgradeSelect();
+      };
+
+      const updateUpgradeSelect = () => {
+        const select = document.getElementById("upgradeToolSelect");
+        select.innerHTML = '<option value="">Select a tool</option>';
+        Object.keys(toolbox).forEach((tool) => {
+          const option = document.createElement("option");
+          option.value = tool;
+          option.textContent = tool;
+          select.appendChild(option);
+        });
+      };
+
+      const addTool = () => {
+        const newToolName = document.getElementById("newToolName").value;
+        const newToolValue = document.getElementById("newToolValue").value;
+
+        if (newToolName && newToolValue) {
+          toolbox[newToolName] = newToolValue;
+          document.getElementById("newToolName").value = "";
+          document.getElementById("newToolValue").value = "";
+          renderToolbox();
+        }
+      };
+
+      const upgradeTool = () => {
+        const selectedTool = document.getElementById("upgradeToolSelect").value;
+        const newToolValue = document.getElementById("upgradeToolValue").value;
+
+        if (selectedTool && newToolValue) {
+          toolbox[selectedTool] = newToolValue;
+          document.getElementById("upgradeToolValue").value = "";
+          renderToolbox();
+        }
+      };
+
+      const removeTool = (tool) => {
+        delete toolbox[tool];
+        renderToolbox();
+      };
+
+      const selectTool = (tool) => {
+        const output = document.getElementById("selectedToolOutput");
+        output.style.display = "block";
+        output.innerHTML = `
+                <strong>Selected Tool:</strong> ${tool} <br>
+                Current value: ${
+                  typeof toolbox[tool] === "function"
+                    ? "[Function]"
+                    : toolbox[tool]
+                }
+            `;
+      };
+
+      document
+        .getElementById("addToolButton")
+        .addEventListener("click", addTool);
+      document
+        .getElementById("upgradeToolButton")
+        .addEventListener("click", upgradeTool);
+
+      renderToolbox();
+    </script>
+  </body>
+</html>
