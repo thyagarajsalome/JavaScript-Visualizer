@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spread Operator Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+      .container {
+        max-width: 400px;
+        padding: 20px;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        text-align: center;
+      }
+      .input-group {
+        margin-bottom: 10px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+      }
+      input {
+        width: 100%;
+        padding: 8px;
+        margin: 4px 0;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        background-color: #4caf50;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        width: 100%;
+      }
+      #result {
+        margin-top: 20px;
+      }
+      #resultOutput {
+        padding: 10px;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Spread Operator Visualizer</h2>
+
+      <div class="input-group">
+        <label for="array1">Array 1:</label>
+        <input
+          id="array1"
+          value="1, 2, 3"
+          placeholder="Enter items separated by commas"
+        />
+      </div>
+
+      <div class="input-group">
+        <label for="array2">Array 2:</label>
+        <input
+          id="array2"
+          value="4, 5, 6"
+          placeholder="Enter items separated by commas"
+        />
+      </div>
+
+      <button onclick="combineArrays()">Combine Arrays</button>
+      <button onclick="copyArray()">Copy Array 1</button>
+      <button onclick="sumArrayElements()">Sum Array 1 Elements</button>
+
+      <div id="result" style="display: none">
+        <h3>Result of <span id="operation"></span>:</h3>
+        <p id="resultOutput"></p>
+        <p id="explanation"></p>
+      </div>
+    </div>
+
+    <script>
+      let array1 = ["1", "2", "3"];
+      let array2 = ["4", "5", "6"];
+      let result = [];
+
+      function handleArrayChange(inputId, arrayToUpdate) {
+        const input = document.getElementById(inputId);
+        const newArray = input.value.split(",").map((item) => item.trim());
+        if (inputId === "array1") {
+          array1 = newArray;
+        } else {
+          array2 = newArray;
+        }
+      }
+
+      function formatArrayDisplay(arr) {
+        return arr
+          .map((item) => {
+            if (typeof item === "string" && isNaN(item)) {
+              return `"${item}"`;
+            }
+            return item;
+          })
+          .join(", ");
+      }
+
+      function updateResult(operation) {
+        const resultDiv = document.getElementById("result");
+        const operationSpan = document.getElementById("operation");
+        const resultOutput = document.getElementById("resultOutput");
+        const explanation = document.getElementById("explanation");
+
+        resultDiv.style.display = "block";
+        operationSpan.textContent = operation;
+
+        if (operation === "Sum Array Elements") {
+          resultOutput.textContent = result[0];
+        } else {
+          resultOutput.textContent = `[${formatArrayDisplay(result)}]`;
+        }
+
+        if (operation === "Combine Arrays") {
+          explanation.textContent = "Equivalent to: [...array1, ...array2]";
+        } else if (operation === "Copy Array") {
+          explanation.textContent = "Equivalent to: [...array1]";
+        } else if (operation === "Sum Array Elements") {
+          explanation.textContent =
+            "Equivalent to: sum(...array1) where sum = (...args) => args.reduce((acc, val) => acc + Number(val), 0)";
+        }
+      }
+
+      function combineArrays() {
+        handleArrayChange("array1", array1);
+        handleArrayChange("array2", array2);
+        result = [...array1, ...array2];
+        updateResult("Combine Arrays");
+      }
+
+      function copyArray() {
+        handleArrayChange("array1", array1);
+        result = [...array1];
+        updateResult("Copy Array");
+      }
+
+      function sumArrayElements() {
+        handleArrayChange("array1", array1);
+        const sum = (...args) =>
+          args.reduce((acc, val) => acc + Number(val), 0);
+        result = [sum(...array1)];
+        updateResult("Sum Array Elements");
+      }
+
+      // Initialize input fields
+      document.getElementById("array1").value = formatArrayDisplay(array1);
+      document.getElementById("array2").value = formatArrayDisplay(array2);
+
+      // Add event listeners for input changes
+      document
+        .getElementById("array1")
+        .addEventListener("change", () => handleArrayChange("array1", array1));
+      document
+        .getElementById("array2")
+        .addEventListener("change", () => handleArrayChange("array2", array2));
+    </script>
+  </body>
+</html>

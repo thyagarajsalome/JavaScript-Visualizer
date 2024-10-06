@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Array Search Visualization</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+      }
+
+      .input-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      input[type="text"] {
+        flex-grow: 1;
+        padding: 8px;
+      }
+
+      button {
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      .button-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        background-color: #f5f5f5;
+      }
+
+      .array-item {
+        border: 1px solid;
+        border-radius: 4px;
+        padding: 8px;
+        margin-right: 5px;
+      }
+
+      .alert {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+      }
+
+      .alert-icon {
+        margin-right: 10px;
+      }
+
+      .array-display {
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 4px;
+      }
+
+      .highlight {
+        background-color: #c8e6c9;
+        border-color: #2e7d32;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>Array Search Visualization</h2>
+
+      <div class="input-container">
+        <input type="text" id="searchTermInput" placeholder="Enter a fruit" />
+        <button id="searchButton">
+          Search<br /><span class="small-text">array.indexOf()</span>
+        </button>
+        <button id="addFruitButton">Add Fruit</button>
+      </div>
+
+      <button id="resetButton" class="outline">Reset Array</button>
+
+      <div class="button-group" id="arrayDisplay"></div>
+
+      <div id="alertMessage" class="alert" style="display: none">
+        <span class="alert-icon">⚠️</span>
+        <div>
+          <strong>Operation Result:</strong>
+          <p id="messageText"></p>
+        </div>
+      </div>
+
+      <div class="array-display">
+        <h3>Current Array:</h3>
+        <pre id="currentArray"></pre>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let fruits = ["apple", "banana", "orange"];
+        const searchTermInput = document.getElementById("searchTermInput");
+        const searchButton = document.getElementById("searchButton");
+        const addFruitButton = document.getElementById("addFruitButton");
+        const resetButton = document.getElementById("resetButton");
+        const arrayDisplay = document.getElementById("arrayDisplay");
+        const alertMessage = document.getElementById("alertMessage");
+        const messageText = document.getElementById("messageText");
+        const currentArrayDisplay = document.getElementById("currentArray");
+
+        function renderArray(searchResultIndex = null) {
+          arrayDisplay.innerHTML = "";
+          fruits.forEach((fruit, index) => {
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "array-item";
+            itemDiv.className +=
+              searchResultIndex === index ? " highlight" : " bg-blue-100";
+            itemDiv.textContent = fruit;
+            arrayDisplay.appendChild(itemDiv);
+          });
+          currentArrayDisplay.textContent = JSON.stringify(fruits, null, 2);
+        }
+
+        function showAlert(message) {
+          messageText.textContent = message;
+          alertMessage.style.display = "block";
+        }
+
+        function searchArray() {
+          const searchTerm = searchTermInput.value.trim().toLowerCase();
+          const index = fruits.indexOf(searchTerm);
+          if (index !== -1) {
+            showAlert(`fruits.indexOf('${searchTerm}'): ${index}`);
+          } else {
+            showAlert(`fruits.indexOf('${searchTerm}'): ${index} (not found)`);
+          }
+          renderArray(index);
+        }
+
+        function addFruit() {
+          const newFruit = searchTermInput.value.trim().toLowerCase();
+          if (newFruit && !fruits.includes(newFruit)) {
+            fruits.push(newFruit);
+            searchTermInput.value = "";
+            showAlert(`Added "${newFruit}" to the array`);
+          } else if (fruits.includes(newFruit)) {
+            showAlert(`"${newFruit}" already exists in the array`);
+          }
+          renderArray();
+        }
+
+        function resetArray() {
+          fruits = ["apple", "banana", "orange"];
+          searchTermInput.value = "";
+          showAlert("Array reset to initial state");
+          renderArray();
+        }
+
+        searchButton.addEventListener("click", searchArray);
+        addFruitButton.addEventListener("click", addFruit);
+        resetButton.addEventListener("click", resetArray);
+
+        renderArray();
+      });
+    </script>
+  </body>
+</html>

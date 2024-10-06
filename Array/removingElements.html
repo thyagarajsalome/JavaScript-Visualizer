@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Array Operations Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f8f8;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .array-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+
+      .array-item {
+        width: 50px;
+        height: 50px;
+        border: 1px solid #ccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 5px;
+        background-color: #e3e3e3;
+      }
+
+      .input-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      input[type="number"] {
+        padding: 8px;
+        flex-grow: 1;
+      }
+
+      button {
+        padding: 8px 12px;
+        cursor: pointer;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+      }
+
+      button:hover {
+        background-color: #0056b3;
+      }
+
+      .operation-info {
+        text-align: center;
+        margin-top: 20px;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2 class="text-center">Array Operations Visualizer</h2>
+      <div class="array-container" id="arrayContainer"></div>
+      <div class="input-container">
+        <input type="number" id="inputValue" placeholder="Enter a number" />
+        <button onclick="push()">Push</button>
+        <button onclick="pop()">Pop</button>
+        <button onclick="unshift()">Unshift</button>
+        <button onclick="shift()">Shift</button>
+        <button onclick="splice()">Splice</button>
+      </div>
+      <div class="operation-info" id="lastOperation">Last Operation: None</div>
+    </div>
+
+    <script>
+      let numbers = [1, 2, 3, 4];
+      const arrayContainer = document.getElementById("arrayContainer");
+      const lastOperation = document.getElementById("lastOperation");
+      const inputValue = document.getElementById("inputValue");
+
+      function renderArray() {
+        arrayContainer.innerHTML = "";
+        numbers.forEach((num, index) => {
+          const itemDiv = document.createElement("div");
+          itemDiv.className = "array-item";
+          itemDiv.textContent = num;
+          arrayContainer.appendChild(itemDiv);
+        });
+      }
+
+      function updateLastOperation(message) {
+        lastOperation.textContent = `Last Operation: ${message}`;
+      }
+
+      function push() {
+        const value = parseInt(inputValue.value);
+        if (!isNaN(value)) {
+          numbers.push(value);
+          inputValue.value = "";
+          updateLastOperation(`Pushed ${value}`);
+          renderArray();
+        }
+      }
+
+      function pop() {
+        if (numbers.length > 0) {
+          const popped = numbers.pop();
+          updateLastOperation(`Popped ${popped}`);
+          renderArray();
+        }
+      }
+
+      function unshift() {
+        const value = parseInt(inputValue.value);
+        if (!isNaN(value)) {
+          numbers.unshift(value);
+          inputValue.value = "";
+          updateLastOperation(`Unshifted ${value}`);
+          renderArray();
+        }
+      }
+
+      function shift() {
+        if (numbers.length > 0) {
+          const shifted = numbers.shift();
+          updateLastOperation(`Shifted ${shifted}`);
+          renderArray();
+        }
+      }
+
+      function splice() {
+        if (numbers.length > 2) {
+          const spliced = numbers.splice(2, 1)[0];
+          updateLastOperation(`Spliced ${spliced} at index 2`);
+          renderArray();
+        }
+      }
+
+      // Initial render of the array
+      renderArray();
+    </script>
+  </body>
+</html>

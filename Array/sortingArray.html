@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Enhanced Course Sort Visualization</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+      .card {
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        width: 100%;
+        max-width: 800px;
+      }
+      .card-header {
+        margin-bottom: 20px;
+      }
+      .card-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0;
+      }
+      .button-group {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      button {
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+      button svg {
+        margin-right: 5px;
+      }
+      .course-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .course-card {
+        background-color: #f9fafb;
+        border: 1px solid #e5e7eb;
+        border-radius: 4px;
+        padding: 10px;
+        position: relative;
+      }
+      .course-card.comparing {
+        background-color: #fef3c7;
+      }
+      .course-name {
+        font-weight: 600;
+        margin: 0;
+      }
+      .course-id {
+        font-size: 14px;
+        color: #6b7280;
+        margin: 5px 0;
+      }
+      .course-uppercase {
+        font-size: 12px;
+        color: #9ca3af;
+        margin: 0;
+      }
+      .step-info {
+        text-align: center;
+        margin-top: 20px;
+      }
+      .input-group {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      input {
+        flex-grow: 1;
+        padding: 8px;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+      }
+      .remove-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background-color: #ef4444;
+        color: white;
+        border: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 14px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-header">
+        <h1 class="card-title">Enhanced Course Sort Visualization</h1>
+      </div>
+      <div class="card-content">
+        <div class="input-group">
+          <input type="text" id="courseName" placeholder="Course Name" />
+          <input type="number" id="courseId" placeholder="Course ID" />
+          <button onclick="addCourse()">Add Course</button>
+        </div>
+        <div class="button-group">
+          <button id="startSortBtn" onclick="sortCourses()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            Start Sort
+          </button>
+          <button id="nextStepBtn" onclick="nextStep()" disabled>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+            Next Step
+          </button>
+          <button id="resetBtn" onclick="reset()">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="1 4 1 10 7 10"></polyline>
+              <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+            </svg>
+            Reset
+          </button>
+        </div>
+        <div id="courseGrid" class="course-grid"></div>
+        <div id="stepInfo" class="step-info"></div>
+      </div>
+    </div>
+
+    <script>
+      const initialCourses = [
+        { id: 1, name: "Node.js" },
+        { id: 2, name: "javaScript" },
+        { id: 3, name: "Python" },
+        { id: 4, name: "Java" },
+      ];
+
+      let courses = [...initialCourses];
+      let sortSteps = [];
+      let currentStep = 0;
+      let comparingIndices = [];
+      let isSorting = false;
+
+      function renderCourses() {
+        const courseGrid = document.getElementById("courseGrid");
+        courseGrid.innerHTML = "";
+        courses.forEach((course, index) => {
+          const courseCard = document.createElement("div");
+          courseCard.className = `course-card ${
+            isComparing(index) ? "comparing" : ""
+          }`;
+          courseCard.innerHTML = `
+                    <p class="course-name">${course.name}</p>
+                    <p class="course-id">ID: ${course.id}</p>
+                    <p class="course-uppercase">Uppercase: ${course.name.toUpperCase()}</p>
+                    <button class="remove-btn" onclick="removeCourse(${index})">×</button>
+                `;
+          courseGrid.appendChild(courseCard);
+        });
+      }
+
+      function addCourse() {
+        const nameInput = document.getElementById("courseName");
+        const idInput = document.getElementById("courseId");
+        const name = nameInput.value.trim();
+        const id = parseInt(idInput.value);
+
+        if (name && !isNaN(id)) {
+          courses.push({ id, name });
+          nameInput.value = "";
+          idInput.value = "";
+          renderCourses();
+        } else {
+          alert("Please enter a valid course name and ID.");
+        }
+      }
+
+      function removeCourse(index) {
+        courses.splice(index, 1);
+        renderCourses();
+      }
+
+      function sortCourses() {
+        const coursesCopy = [...courses];
+        sortSteps = [coursesCopy.map((course) => ({ ...course }))];
+        comparingIndices = [];
+
+        for (let i = 0; i < coursesCopy.length; i++) {
+          for (let j = 0; j < coursesCopy.length - 1 - i; j++) {
+            const nameA = coursesCopy[j].name.toUpperCase();
+            const nameB = coursesCopy[j + 1].name.toUpperCase();
+            comparingIndices.push([j, j + 1]);
+            if (nameA > nameB) {
+              // Swap
+              [coursesCopy[j], coursesCopy[j + 1]] = [
+                coursesCopy[j + 1],
+                coursesCopy[j],
+              ];
+            }
+            sortSteps.push(coursesCopy.map((course) => ({ ...course })));
+          }
+        }
+
+        currentStep = 0;
+        isSorting = true;
+        updateUI();
+      }
+
+      function nextStep() {
+        if (currentStep < sortSteps.length - 1) {
+          currentStep++;
+          courses = sortSteps[currentStep];
+          updateUI();
+        }
+      }
+
+      function reset() {
+        courses = [...initialCourses];
+        sortSteps = [];
+        currentStep = 0;
+        comparingIndices = [];
+        isSorting = false;
+        updateUI();
+      }
+
+      function isComparing(index) {
+        return (
+          Array.isArray(comparingIndices[currentStep]) &&
+          comparingIndices[currentStep].includes(index)
+        );
+      }
+
+      function updateUI() {
+        renderCourses();
+        updateButtons();
+        updateStepInfo();
+      }
+
+      function updateButtons() {
+        document.getElementById("startSortBtn").disabled = isSorting;
+        document.getElementById("nextStepBtn").disabled =
+          !isSorting || currentStep === sortSteps.length - 1;
+      }
+
+      function updateStepInfo() {
+        const stepInfo = document.getElementById("stepInfo");
+        if (isSorting) {
+          let infoText = `Step ${currentStep + 1} of ${sortSteps.length}`;
+          if (
+            Array.isArray(comparingIndices[currentStep]) &&
+            comparingIndices[currentStep].length === 2
+          ) {
+            const [indexA, indexB] = comparingIndices[currentStep];
+            infoText += `: Comparing ${courses[indexA]?.name} and ${courses[indexB]?.name}`;
+          }
+          stepInfo.textContent = infoText;
+        } else {
+          stepInfo.textContent = "";
+        }
+      }
+
+      // Initial render
+      renderCourses();
+    </script>
+  </body>
+</html>

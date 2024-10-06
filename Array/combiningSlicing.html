@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Array Operations Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f8f8;
+      }
+
+      .container {
+        max-width: 400px;
+        margin: auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      input[type="text"],
+      input[type="number"] {
+        width: 100%;
+        padding: 8px;
+        margin: 4px 0;
+        box-sizing: border-box;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        background-color: #4caf50;
+        border: none;
+        color: white;
+        padding: 10px 20px;
+        font-size: 16px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+        width: 48%;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+
+      .result {
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2 style="text-align: center">Array Operations Visualizer</h2>
+
+      <div>
+        <label for="array1">Array 1:</label>
+        <input
+          id="array1"
+          type="text"
+          placeholder="Enter items separated by commas"
+        />
+      </div>
+
+      <div>
+        <label for="array2">Array 2:</label>
+        <input
+          id="array2"
+          type="text"
+          placeholder="Enter items separated by commas"
+        />
+      </div>
+
+      <div>
+        <label for="sliceStart">Slice Start:</label>
+        <input id="sliceStart" type="number" value="1" />
+      </div>
+
+      <div>
+        <label for="sliceEnd">Slice End:</label>
+        <input id="sliceEnd" type="number" value="4" />
+      </div>
+
+      <div
+        style="display: flex; justify-content: space-between; margin-top: 10px"
+      >
+        <button onclick="combineArrays()">Combine Arrays</button>
+        <button onclick="sliceArray()">Slice Array 1</button>
+      </div>
+
+      <div id="resultDisplay" class="result" style="display: none"></div>
+    </div>
+
+    <script>
+      function formatArrayDisplay(arr) {
+        return arr
+          .map((item) =>
+            isNaN(item) && item.trim() !== "" ? `"${item}"` : item
+          )
+          .join(", ");
+      }
+
+      function combineArrays() {
+        const array1 = document
+          .getElementById("array1")
+          .value.split(",")
+          .map((item) => item.trim());
+        const array2 = document
+          .getElementById("array2")
+          .value.split(",")
+          .map((item) => item.trim());
+        const result = array1.concat(array2);
+        displayResult("Combine", result);
+      }
+
+      function sliceArray() {
+        const array1 = document
+          .getElementById("array1")
+          .value.split(",")
+          .map((item) => item.trim());
+        const sliceStart = parseInt(
+          document.getElementById("sliceStart").value
+        );
+        const sliceEnd = parseInt(document.getElementById("sliceEnd").value);
+        const result = array1.slice(sliceStart, sliceEnd);
+        displayResult("Slice", result);
+      }
+
+      function displayResult(operation, result) {
+        const resultDisplay = document.getElementById("resultDisplay");
+        resultDisplay.innerHTML = `<h3>Result of ${operation} Operation:</h3>[${formatArrayDisplay(
+          result
+        )}]`;
+        resultDisplay.style.display = "block";
+      }
+    </script>
+  </body>
+</html>

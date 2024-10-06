@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Array Concatenation Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .container {
+        max-width: 400px;
+        background-color: white;
+        padding: 24px;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 16px;
+      }
+      .array-box {
+        padding: 16px;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .fruits {
+        background-color: #fee2e2;
+      }
+      .vegetables {
+        background-color: #dcfce7;
+      }
+      .concatenated {
+        background-color: #fef9c3;
+      }
+      h3 {
+        font-weight: bold;
+        margin-bottom: 8px;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0 0 8px 0;
+      }
+      li {
+        margin-bottom: 4px;
+      }
+      .input-group {
+        display: flex;
+        margin-bottom: 8px;
+      }
+      input {
+        flex-grow: 1;
+        padding: 8px;
+        margin-right: 8px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        padding: 8px 16px;
+        background-color: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #2563eb;
+      }
+      .arrow {
+        text-align: center;
+        font-size: 24px;
+        margin-bottom: 16px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Array Concatenation Visualizer</h2>
+      <div id="fruitsBox" class="array-box fruits">
+        <h3>Fruits</h3>
+        <ul id="fruitsList"></ul>
+        <div class="input-group">
+          <input type="text" id="newFruit" placeholder="Add new fruit" />
+          <button onclick="addItem('fruits')">+</button>
+        </div>
+      </div>
+      <div class="arrow">↓</div>
+      <div id="vegetablesBox" class="array-box vegetables">
+        <h3>Vegetables</h3>
+        <ul id="vegetablesList"></ul>
+        <div class="input-group">
+          <input
+            type="text"
+            id="newVegetable"
+            placeholder="Add new vegetable"
+          />
+          <button onclick="addItem('vegetables')">+</button>
+        </div>
+      </div>
+      <button id="toggleButton" onclick="toggleConcatenatedArray()">
+        Show Concatenated Array
+      </button>
+      <div
+        id="concatenatedBox"
+        class="array-box concatenated"
+        style="display: none"
+      >
+        <h3>Concatenated Array</h3>
+        <ul id="concatenatedList"></ul>
+      </div>
+    </div>
+
+    <script>
+      let fruits = ["apple", "banana", "cherry"];
+      let vegetables = ["tomato", "cucumber", "pepper"];
+      let showResult = false;
+
+      function renderList(items, listId) {
+        const list = document.getElementById(listId);
+        list.innerHTML = "";
+        items.forEach((item) => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          list.appendChild(li);
+        });
+      }
+
+      function addItem(arrayType) {
+        const input = document.getElementById(
+          `new${arrayType.charAt(0).toUpperCase() + arrayType.slice(1)}`
+        );
+        const newItem = input.value.trim();
+        if (newItem !== "") {
+          if (arrayType === "fruits") {
+            fruits.push(newItem);
+            renderList(fruits, "fruitsList");
+          } else {
+            vegetables.push(newItem);
+            renderList(vegetables, "vegetablesList");
+          }
+          input.value = "";
+          if (showResult) {
+            renderConcatenatedArray();
+          }
+        }
+      }
+
+      function renderConcatenatedArray() {
+        const concatenatedArray = fruits.concat(vegetables);
+        renderList(concatenatedArray, "concatenatedList");
+      }
+
+      function toggleConcatenatedArray() {
+        showResult = !showResult;
+        const concatenatedBox = document.getElementById("concatenatedBox");
+        const toggleButton = document.getElementById("toggleButton");
+        if (showResult) {
+          concatenatedBox.style.display = "block";
+          toggleButton.textContent = "Hide Concatenated Array";
+          renderConcatenatedArray();
+        } else {
+          concatenatedBox.style.display = "none";
+          toggleButton.textContent = "Show Concatenated Array";
+        }
+      }
+
+      // Initial render
+      renderList(fruits, "fruitsList");
+      renderList(vegetables, "vegetablesList");
+    </script>
+  </body>
+</html>

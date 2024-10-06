@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Array Operations Visualization</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+      }
+
+      .input-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      input[type="text"] {
+        flex-grow: 1;
+        padding: 8px;
+      }
+
+      button {
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      .button-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      button {
+        border: 1px solid #ccc;
+        background-color: #f5f5f5;
+      }
+
+      .array-item {
+        background-color: #cce4f6;
+        border: 1px solid #a6c9e2;
+        border-radius: 4px;
+        padding: 8px;
+        margin-right: 5px;
+      }
+
+      .alert {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+      }
+
+      .alert-icon {
+        margin-right: 10px;
+      }
+
+      .array-display {
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>Array Operations Visualization</h2>
+
+      <div class="input-container">
+        <input type="text" id="newItemInput" placeholder="Enter a value" />
+      </div>
+
+      <div class="button-group">
+        <button id="addToBeginningButton">
+          Add to Beginning<br /><span class="small-text">array.unshift()</span>
+        </button>
+        <button id="addToMiddleButton">
+          Add to Middle<br /><span class="small-text">array.splice()</span>
+        </button>
+        <button id="addToEndButton">
+          Add to End<br /><span class="small-text">array.push()</span>
+        </button>
+        <button id="resetButton" class="outline">Reset Array</button>
+      </div>
+
+      <div class="button-group" id="arrayDisplay"></div>
+
+      <div id="alertMessage" class="alert" style="display: none">
+        <span class="alert-icon">⚠️</span>
+        <div>
+          <strong>Operation Result:</strong>
+          <p id="messageText"></p>
+        </div>
+      </div>
+
+      <div class="array-display">
+        <h3>Current Array:</h3>
+        <pre id="currentArray"></pre>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let array = [3, 4];
+        const newItemInput = document.getElementById("newItemInput");
+        const addToBeginningButton = document.getElementById(
+          "addToBeginningButton"
+        );
+        const addToMiddleButton = document.getElementById("addToMiddleButton");
+        const addToEndButton = document.getElementById("addToEndButton");
+        const resetButton = document.getElementById("resetButton");
+        const arrayDisplay = document.getElementById("arrayDisplay");
+        const alertMessage = document.getElementById("alertMessage");
+        const messageText = document.getElementById("messageText");
+        const currentArrayDisplay = document.getElementById("currentArray");
+
+        function renderArray() {
+          arrayDisplay.innerHTML = "";
+          array.forEach((item, index) => {
+            const itemDiv = document.createElement("div");
+            itemDiv.className = "array-item";
+            itemDiv.textContent = item;
+            arrayDisplay.appendChild(itemDiv);
+          });
+          currentArrayDisplay.textContent = JSON.stringify(array, null, 2);
+        }
+
+        function showAlert(message) {
+          messageText.textContent = message;
+          alertMessage.style.display = "block";
+        }
+
+        function addToEnd() {
+          const newItem = newItemInput.value.trim();
+          if (newItem !== "") {
+            array.push(newItem);
+            newItemInput.value = "";
+            showAlert(
+              `array.push(${newItem}): Added "${newItem}" to the end of the array`
+            );
+            renderArray();
+          }
+        }
+
+        function addToBeginning() {
+          const newItem = newItemInput.value.trim();
+          if (newItem !== "") {
+            array.unshift(newItem);
+            newItemInput.value = "";
+            showAlert(
+              `array.unshift(${newItem}): Added "${newItem}" to the beginning of the array`
+            );
+            renderArray();
+          }
+        }
+
+        function addToMiddle() {
+          const newItem = newItemInput.value.trim();
+          if (newItem !== "") {
+            const middleIndex = Math.floor(array.length / 2);
+            array.splice(middleIndex, 0, newItem);
+            newItemInput.value = "";
+            showAlert(
+              `array.splice(${middleIndex}, 0, ${newItem}): Added "${newItem}" to the middle of the array`
+            );
+            renderArray();
+          }
+        }
+
+        function resetArray() {
+          array = [3, 4];
+          showAlert("Array reset to initial state: [3, 4]");
+          renderArray();
+        }
+
+        addToEndButton.addEventListener("click", addToEnd);
+        addToBeginningButton.addEventListener("click", addToBeginning);
+        addToMiddleButton.addEventListener("click", addToMiddle);
+        resetButton.addEventListener("click", resetArray);
+
+        renderArray();
+      });
+    </script>
+  </body>
+</html>

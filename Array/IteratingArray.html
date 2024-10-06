@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fruit Basket Iterator</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f4f4f4;
+      margin: 0;
+    }
+
+    .container {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      width: 300px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+    }
+
+    .controls,
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+    }
+
+    .output-box {
+      background-color: #e0e0e0;
+      padding: 10px;
+      height: 150px;
+      overflow-y: auto;
+      border-radius: 5px;
+    }
+
+    .buttons button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .buttons button:disabled {
+      background-color: #cccccc;
+    }
+
+    .buttons button:hover:not(:disabled) {
+      background-color: #0056b3;
+    }
+  </style>
+  <body>
+    <div class="container">
+      <h2>Fruit Basket Iterator</h2>
+      <div class="controls">
+        <label for="iterationMethod">Select iteration method:</label>
+        <select id="iterationMethod">
+          <option value="for">for loop</option>
+          <option value="forOfForEach">for...of with forEach</option>
+        </select>
+      </div>
+
+      <div class="output-box">
+        <pre id="output"></pre>
+      </div>
+
+      <div class="buttons">
+        <button id="resetButton">Reset</button>
+        <button id="nextButton">Next</button>
+      </div>
+    </div>
+
+    <script>
+      const fruits = [
+        "🍎 Apple",
+        "🍌 Banana",
+        "🍊 Orange",
+        "🍇 Grapes",
+        "🍓 Strawberry",
+      ];
+      let currentIndex = 0;
+      let iterationMethod = "for";
+      let output = "";
+
+      document
+        .getElementById("iterationMethod")
+        .addEventListener("change", (event) => {
+          iterationMethod = event.target.value;
+        });
+
+      document.getElementById("resetButton").addEventListener("click", () => {
+        currentIndex = 0;
+        output = "";
+        document.getElementById("output").innerText = "";
+        document.getElementById("nextButton").disabled = false;
+      });
+
+      document.getElementById("nextButton").addEventListener("click", () => {
+        if (currentIndex < fruits.length) {
+          let newOutput = "";
+          switch (iterationMethod) {
+            case "for":
+              newOutput = `for (let i = ${currentIndex}; i < fruits.length; i++) {\n  console.log(fruits[i]);\n}\n// Output: ${fruits[currentIndex]}`;
+              break;
+            case "forOfForEach":
+              newOutput = `for (let fruit of fruits) {\n  fruits.forEach((f) => {\n    console.log(f);\n  });\n}\n// Output: ${fruits[currentIndex]}`;
+              break;
+          }
+          output = output ? `${output}\n\n${newOutput}` : newOutput;
+          document.getElementById("output").innerText = output;
+          currentIndex++;
+
+          if (currentIndex >= fruits.length) {
+            document.getElementById("nextButton").disabled = true;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

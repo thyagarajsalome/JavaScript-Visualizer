@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive Array Visualization</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+      }
+
+      .container {
+        max-width: 600px;
+        margin: auto;
+        padding: 20px;
+      }
+
+      .input-container {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      input[type="text"] {
+        flex-grow: 1;
+        padding: 8px;
+      }
+
+      button {
+        padding: 8px 12px;
+        cursor: pointer;
+      }
+
+      button.destructive {
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+      }
+
+      .fruit-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      button.fruit-button {
+        border: 1px solid #ccc;
+        padding: 8px;
+        cursor: pointer;
+      }
+
+      button.fruit-button.selected {
+        background-color: #f0f0f0;
+      }
+
+      .alert {
+        background-color: #f9f9f9;
+        padding: 10px;
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+      }
+
+      .array-display {
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>Interactive Array Visualization</h2>
+
+      <div class="input-container">
+        <input type="text" id="fruitInput" placeholder="Enter a fruit" />
+        <button id="addButton">Add</button>
+        <button id="removeButton" class="destructive">Remove Last</button>
+      </div>
+
+      <div id="fruitButtons" class="fruit-buttons"></div>
+
+      <div class="alert">
+        <strong>Output:</strong>
+        <p id="outputMessage"></p>
+      </div>
+
+      <div class="array-display">
+        <h3>Current Array:</h3>
+        <pre id="currentArray"></pre>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let fruits = ["apple", "banana", "orange"];
+        let selectedIndex = null;
+
+        const fruitInput = document.getElementById("fruitInput");
+        const addButton = document.getElementById("addButton");
+        const removeButton = document.getElementById("removeButton");
+        const fruitButtonsContainer = document.getElementById("fruitButtons");
+        const outputMessage = document.getElementById("outputMessage");
+        const currentArrayDisplay = document.getElementById("currentArray");
+
+        function renderFruits() {
+          fruitButtonsContainer.innerHTML = "";
+          fruits.forEach((fruit, index) => {
+            const button = document.createElement("button");
+            button.classList.add("fruit-button");
+            if (selectedIndex === index) {
+              button.classList.add("selected");
+            }
+            button.textContent = fruit;
+            button.addEventListener("click", () => accessItem(index));
+            fruitButtonsContainer.appendChild(button);
+          });
+          currentArrayDisplay.textContent = JSON.stringify(fruits, null, 2);
+        }
+
+        function addFruit() {
+          const newFruit = fruitInput.value.trim();
+          if (newFruit !== "") {
+            fruits.push(newFruit);
+            fruitInput.value = "";
+            outputMessage.textContent = `Added "${newFruit}" to the array`;
+            renderFruits();
+          }
+        }
+
+        function removeLast() {
+          if (fruits.length > 0) {
+            const removed = fruits.pop();
+            outputMessage.textContent = `Removed "${removed}" from the array`;
+          } else {
+            outputMessage.textContent = "Cannot remove from an empty array";
+          }
+          renderFruits();
+        }
+
+        function accessItem(index) {
+          selectedIndex = index;
+          outputMessage.textContent = `Accessed item at index ${index}: "${fruits[index]}"`;
+          renderFruits();
+        }
+
+        addButton.addEventListener("click", addFruit);
+        removeButton.addEventListener("click", removeLast);
+
+        renderFruits();
+      });
+    </script>
+  </body>
+</html>
