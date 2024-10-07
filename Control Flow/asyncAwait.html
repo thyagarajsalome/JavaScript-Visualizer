@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Package Delivery Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+      .card-header {
+        font-weight: bold;
+        margin-bottom: 12px;
+      }
+      .button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .result {
+        margin-top: 20px;
+        font-size: 16px;
+      }
+      .package-stage {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+        color: white;
+      }
+      .waiting {
+        background-color: #f0ad4e;
+      }
+      .delivered {
+        background-color: #5cb85c;
+      }
+      .opening {
+        background-color: #5bc0de;
+      }
+      pre {
+        background-color: #f8f9fa;
+        padding: 10px;
+        border-radius: 4px;
+        overflow-x: auto;
+        border: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-header">Package Delivery Visualizer</div>
+      <button class="button" id="check-delivery-button">Check Delivery</button>
+      <div id="visualizer"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">JavaScript Code</div>
+      <pre id="code-display"></pre>
+    </div>
+
+    <script>
+      document
+        .getElementById("check-delivery-button")
+        .addEventListener("click", async () => {
+          const visualizer = document.getElementById("visualizer");
+          visualizer.innerHTML = "";
+
+          // Function to simulate package delivery
+          function deliverPackage() {
+            return new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve("Your package has arrived!");
+              }, 2000); // It takes 5 seconds for the package to arrive
+            });
+          }
+
+          // Function to check delivery using async/await
+          async function checkDelivery() {
+            // Stage 1: Waiting for the package
+            const waitingStage = document.createElement("div");
+            waitingStage.className = "package-stage waiting";
+            waitingStage.textContent = "Waiting for the package...";
+            visualizer.appendChild(waitingStage);
+
+            console.log("Waiting for the package...");
+
+            try {
+              // Await the delivery
+              const message = await deliverPackage();
+
+              // Stage 2: Package has arrived
+              const deliveredStage = document.createElement("div");
+              deliveredStage.className = "package-stage delivered";
+              deliveredStage.textContent = message;
+              visualizer.appendChild(deliveredStage);
+
+              console.log(message);
+
+              // Stage 3: Opening the package
+              const openingStage = document.createElement("div");
+              openingStage.className = "package-stage opening";
+              openingStage.textContent = "Let's open the package!";
+              visualizer.appendChild(openingStage);
+
+              console.log("Let's open the package!");
+            } catch (error) {
+              console.log("Oops! Something went wrong:", error);
+              const errorStage = document.createElement("div");
+              errorStage.className = "package-stage waiting";
+              errorStage.textContent = "Oops! Something went wrong: " + error;
+              visualizer.appendChild(errorStage);
+            }
+          }
+
+          // Call the function to check delivery
+          await checkDelivery();
+        });
+
+      // Display the JavaScript code in the code-display element
+      const codeDisplay = document.getElementById("code-display");
+      codeDisplay.textContent = `
+        // Function to simulate package delivery
+        function deliverPackage() {
+            return new Promise((resolve, reject) => {
+                setTimeout(() => {
+                    resolve("Your package has arrived!");
+                }, 5000); // It takes 5 seconds for the package to arrive
+            });
+        }
+
+        // Function to check delivery using async/await
+        async function checkDelivery() {
+            console.log("Waiting for the package...");
+            try {
+                const message = await deliverPackage();
+                console.log(message);
+                console.log("Let's open the package!");
+            } catch (error) {
+                console.log("Oops! Something went wrong:", error);
+            }
+        }
+
+        // Event listener to start the delivery process
+        document.getElementById('check-delivery-button').addEventListener('click', async () => {
+            await checkDelivery();
+        });
+    `;
+    </script>
+  </body>
+</html>

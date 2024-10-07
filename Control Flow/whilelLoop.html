@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive While Loop Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+      .card {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        width: 100%;
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 5px;
+      }
+      input[type="number"],
+      input[type="checkbox"] {
+        margin-top: 5px;
+      }
+      button {
+        padding: 10px 20px;
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .results {
+        margin-top: 20px;
+        max-height: 100px;
+        overflow-y: auto;
+        background: #f9f9f9;
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+      }
+      .code-block {
+        background: #f0f0f0;
+        padding: 10px;
+        margin-top: 20px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        font-family: "Courier New", Courier, monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Interactive While Loop Visualizer</h2>
+      <div class="input-group">
+        <label for="initialValue">Initial Value:</label>
+        <input type="number" id="initialValue" value="0" />
+      </div>
+      <div class="input-group">
+        <label for="conditionValue">Condition Value:</label>
+        <input type="number" id="conditionValue" value="10" />
+      </div>
+      <div class="input-group">
+        <label for="incrementValue">Increment Value:</label>
+        <input type="number" id="incrementValue" value="1" />
+      </div>
+      <div class="input-group">
+        <label>
+          <input type="checkbox" id="useGreaterThan" />
+          Use ">" operator instead of "<"
+        </label>
+      </div>
+      <button onclick="runLoop()">Run Loop</button>
+
+      <div class="code-block" id="loopCode"></div>
+
+      <div class="results" id="loopResults"></div>
+    </div>
+
+    <script>
+      function updateCodeDisplay(
+        initialValue,
+        conditionValue,
+        incrementValue,
+        useGreaterThan
+      ) {
+        const operator = useGreaterThan ? ">" : "<";
+        const codeExample = `
+let i = ${initialValue};
+while (i ${operator} ${conditionValue}) {
+    console.log(i);
+    i += ${incrementValue};
+}`;
+        document.getElementById("loopCode").innerText = codeExample;
+      }
+
+      function runLoop() {
+        const initialValue = Number(
+          document.getElementById("initialValue").value
+        );
+        const conditionValue = Number(
+          document.getElementById("conditionValue").value
+        );
+        const incrementValue = Number(
+          document.getElementById("incrementValue").value
+        );
+        const useGreaterThan =
+          document.getElementById("useGreaterThan").checked;
+
+        const loopResultsDiv = document.getElementById("loopResults");
+        loopResultsDiv.innerHTML = "";
+
+        let i = initialValue;
+        const results = [];
+
+        while (useGreaterThan ? i > conditionValue : i < conditionValue) {
+          results.push(i);
+          i += incrementValue;
+        }
+
+        results.forEach((value) => {
+          const resultDiv = document.createElement("div");
+          resultDiv.textContent = `console.log(${value});`;
+          loopResultsDiv.appendChild(resultDiv);
+        });
+
+        updateCodeDisplay(
+          initialValue,
+          conditionValue,
+          incrementValue,
+          useGreaterThan
+        );
+      }
+
+      document.querySelectorAll("input").forEach((input) => {
+        input.addEventListener("input", () => {
+          const initialValue = Number(
+            document.getElementById("initialValue").value
+          );
+          const conditionValue = Number(
+            document.getElementById("conditionValue").value
+          );
+          const incrementValue = Number(
+            document.getElementById("incrementValue").value
+          );
+          const useGreaterThan =
+            document.getElementById("useGreaterThan").checked;
+
+          updateCodeDisplay(
+            initialValue,
+            conditionValue,
+            incrementValue,
+            useGreaterThan
+          );
+        });
+      });
+
+      // Initial update to display the code when the page loads
+      updateCodeDisplay(0, 10, 1, false);
+    </script>
+  </body>
+</html>

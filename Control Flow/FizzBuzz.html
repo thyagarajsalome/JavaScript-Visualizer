@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FizzBuzz Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+      .card-header {
+        font-weight: bold;
+        margin-bottom: 12px;
+      }
+      .flex {
+        display: flex;
+        gap: 8px;
+      }
+      .input {
+        flex-grow: 1;
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+      }
+      .button {
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .tree-node {
+        margin-left: 20px;
+        position: relative;
+      }
+      .tree-node:before {
+        content: "";
+        position: absolute;
+        left: -15px;
+        top: 10px;
+        height: 100%;
+        border-left: 1px solid #ccc;
+      }
+      .tree-node > div {
+        position: relative;
+        padding: 8px;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+        margin-bottom: 8px;
+      }
+      .tree-node > div.highlighted {
+        background-color: #007bff;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-header">FizzBuzz Visualizer</div>
+      <div class="flex">
+        <input
+          type="text"
+          id="input"
+          class="input"
+          placeholder="Enter a number"
+        />
+        <button class="button" id="submit-button">Submit</button>
+      </div>
+      <div class="result">
+        <strong>Result: <span id="result"></span></strong>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Decision Tree</div>
+      <div id="decision-tree"></div>
+    </div>
+
+    <script>
+      const fizzBuzz = (input) => {
+        if (typeof input !== "number" || isNaN(input)) return "Not a number";
+        if (input % 3 === 0 && input % 5 === 0) return "FizzBuzz";
+        if (input % 3 === 0) return "Fizz";
+        if (input % 5 === 0) return "Buzz";
+        return input.toString();
+      };
+
+      const updateVisualizer = () => {
+        const inputValue = document.getElementById("input").value;
+        const numInput = Number(inputValue);
+        const fizzBuzzResult = fizzBuzz(numInput);
+        document.getElementById("result").textContent = fizzBuzzResult;
+
+        // Build path
+        const path = ["Start"];
+        if (isNaN(numInput)) {
+          path.push("Not a number");
+        } else {
+          if (numInput % 3 === 0 && numInput % 5 === 0) {
+            path.push("Divisible by 3 and 5", "FizzBuzz");
+          } else if (numInput % 3 === 0) {
+            path.push("Divisible by 3", "Fizz");
+          } else if (numInput % 5 === 0) {
+            path.push("Divisible by 5", "Buzz");
+          } else {
+            path.push("Not divisible by 3 or 5", "Input");
+          }
+        }
+
+        // Render decision tree
+        renderDecisionTree(path);
+      };
+
+      const renderDecisionTree = (path) => {
+        const treeContainer = document.getElementById("decision-tree");
+        treeContainer.innerHTML = "";
+
+        const createTreeNode = (label, isHighlighted) => {
+          const div = document.createElement("div");
+          div.className = `tree-node`;
+          const labelDiv = document.createElement("div");
+          labelDiv.textContent = label;
+          if (isHighlighted) labelDiv.classList.add("highlighted");
+          div.appendChild(labelDiv);
+          return div;
+        };
+
+        const startNode = createTreeNode("Start", path.includes("Start"));
+        treeContainer.appendChild(startNode);
+
+        const notNumberNode = createTreeNode(
+          "Not a number",
+          path.includes("Not a number")
+        );
+        startNode.appendChild(notNumberNode);
+
+        const divisibleBy3And5Node = createTreeNode(
+          "Divisible by 3 and 5",
+          path.includes("Divisible by 3 and 5")
+        );
+        const fizzBuzzNode = createTreeNode(
+          "FizzBuzz",
+          path.includes("FizzBuzz")
+        );
+        divisibleBy3And5Node.appendChild(fizzBuzzNode);
+        startNode.appendChild(divisibleBy3And5Node);
+
+        const divisibleBy3Node = createTreeNode(
+          "Divisible by 3",
+          path.includes("Divisible by 3")
+        );
+        const fizzNode = createTreeNode("Fizz", path.includes("Fizz"));
+        divisibleBy3Node.appendChild(fizzNode);
+        startNode.appendChild(divisibleBy3Node);
+
+        const divisibleBy5Node = createTreeNode(
+          "Divisible by 5",
+          path.includes("Divisible by 5")
+        );
+        const buzzNode = createTreeNode("Buzz", path.includes("Buzz"));
+        divisibleBy5Node.appendChild(buzzNode);
+        startNode.appendChild(divisibleBy5Node);
+
+        const notDivisibleNode = createTreeNode(
+          "Not divisible by 3 or 5",
+          path.includes("Not divisible by 3 or 5")
+        );
+        const inputNode = createTreeNode("Input", path.includes("Input"));
+        notDivisibleNode.appendChild(inputNode);
+        startNode.appendChild(notDivisibleNode);
+      };
+
+      document
+        .getElementById("submit-button")
+        .addEventListener("click", updateVisualizer);
+    </script>
+  </body>
+</html>

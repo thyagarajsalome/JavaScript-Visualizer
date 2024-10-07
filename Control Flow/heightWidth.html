@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Landscape Orientation Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+      .card-header {
+        font-weight: bold;
+        margin-bottom: 12px;
+      }
+      .slider-container {
+        margin-bottom: 20px;
+      }
+      .visual-representation {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 200px;
+      }
+      .box {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border: 4px solid;
+        transition: all 0.3s ease;
+      }
+      .box.landscape {
+        border-color: green;
+      }
+      .box.portrait {
+        border-color: blue;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-header">Landscape Orientation Visualizer</div>
+      <div class="slider-container">
+        <label for="width-slider"
+          >Width: <span id="width-value">800</span></label
+        >
+        <input
+          type="range"
+          id="width-slider"
+          min="100"
+          max="1000"
+          step="10"
+          value="800"
+        />
+      </div>
+      <div class="slider-container">
+        <label for="height-slider"
+          >Height: <span id="height-value">600</span></label
+        >
+        <input
+          type="range"
+          id="height-slider"
+          min="100"
+          max="1000"
+          step="10"
+          value="600"
+        />
+      </div>
+      <div class="slider-container">
+        <strong>Orientation: <span id="orientation">Landscape</span></strong>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">Visual Representation</div>
+      <div class="visual-representation">
+        <div id="box" class="box landscape" style="width: 80px; height: 60px">
+          <span id="box-dimensions">800 x 600</span>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const widthSlider = document.getElementById("width-slider");
+      const heightSlider = document.getElementById("height-slider");
+      const widthValue = document.getElementById("width-value");
+      const heightValue = document.getElementById("height-value");
+      const orientationText = document.getElementById("orientation");
+      const box = document.getElementById("box");
+      const boxDimensions = document.getElementById("box-dimensions");
+
+      function updateVisualizer() {
+        const width = parseInt(widthSlider.value);
+        const height = parseInt(heightSlider.value);
+
+        // Update displayed values
+        widthValue.textContent = width;
+        heightValue.textContent = height;
+        boxDimensions.textContent = `${width} x ${height}`;
+
+        // Update box size
+        box.style.width = `${width / 10}px`;
+        box.style.height = `${height / 10}px`;
+
+        // Determine orientation and update styles
+        if (width > height) {
+          orientationText.textContent = "Landscape";
+          box.classList.remove("portrait");
+          box.classList.add("landscape");
+        } else {
+          orientationText.textContent = "Portrait";
+          box.classList.remove("landscape");
+          box.classList.add("portrait");
+        }
+      }
+
+      // Event listeners for sliders
+      widthSlider.addEventListener("input", updateVisualizer);
+      heightSlider.addEventListener("input", updateVisualizer);
+
+      // Initial update
+      updateVisualizer();
+    </script>
+  </body>
+</html>

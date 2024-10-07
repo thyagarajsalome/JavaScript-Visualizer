@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pizza Making Visualizer</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
+        margin-bottom: 20px;
+      }
+      .card-header {
+        font-weight: bold;
+        margin-bottom: 12px;
+      }
+      .button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .result {
+        margin-top: 20px;
+        font-size: 16px;
+      }
+      .pizza-stage {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 4px;
+        transition: background-color 0.3s;
+        color: white;
+      }
+      .preparing {
+        background-color: #f0ad4e;
+      }
+      .baking {
+        background-color: #5bc0de;
+      }
+      .ready {
+        background-color: #5cb85c;
+      }
+      .eating {
+        background-color: #d9534f;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-header">Pizza Making Visualizer</div>
+      <button class="button" id="make-pizza-button">Make Pizza</button>
+      <div id="visualizer"></div>
+    </div>
+
+    <script>
+      document
+        .getElementById("make-pizza-button")
+        .addEventListener("click", () => {
+          const visualizer = document.getElementById("visualizer");
+          visualizer.innerHTML = "";
+
+          // Stage 1: Preparing ingredients
+          const preparingStage = document.createElement("div");
+          preparingStage.className = "pizza-stage preparing";
+          preparingStage.textContent = "Preparing ingredients...";
+          visualizer.appendChild(preparingStage);
+
+          // Function to simulate the pizza making process
+          function makePizza(crust, cheese, toppings) {
+            console.log("Making pizza...");
+
+            // Stage 2: Baking the pizza (asynchronous task)
+            setTimeout(() => {
+              console.log("Pizza is ready!");
+
+              // Update visualizer to show the baking stage
+              const bakingStage = document.createElement("div");
+              bakingStage.className = "pizza-stage baking";
+              bakingStage.textContent = "Baking pizza...";
+              visualizer.appendChild(bakingStage);
+
+              // Stage 3: Pizza is ready
+              const readyStage = document.createElement("div");
+              readyStage.className = "pizza-stage ready";
+              readyStage.textContent = "Pizza is ready!";
+              visualizer.appendChild(readyStage);
+
+              // Eat the pizza after it's ready
+              eatPizza(cheese, toppings);
+            }, 2000);
+          }
+
+          function eatPizza(cheese, toppings) {
+            console.log(
+              "Mmm, delicious pizza with " + cheese + " and " + toppings + "!"
+            );
+
+            // Stage 4: Eating the pizza
+            const eatingStage = document.createElement("div");
+            eatingStage.className = "pizza-stage eating";
+            eatingStage.textContent = `Mmm, delicious pizza with ${cheese} and ${toppings}!`;
+            visualizer.appendChild(eatingStage);
+          }
+
+          // Call the function to start making the pizza
+          makePizza("thin", "mozzarella", "pepperoni and mushrooms");
+        });
+    </script>
+  </body>
+</html>
