@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Function Visualization</title>
+    <style>
+      body {
+        font-family: system-ui, -apple-system, sans-serif;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 768px;
+      }
+
+      .card-header {
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+      }
+
+      .card-title {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 600;
+      }
+
+      .card-content {
+        padding: 20px;
+      }
+
+      .space-y-4 > * + * {
+        margin-top: 1rem;
+      }
+
+      .button-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+      }
+
+      .button {
+        padding: 8px 16px;
+        border-radius: 6px;
+        border: 1px solid #2563eb;
+        background-color: #2563eb;
+        color: white;
+        cursor: pointer;
+        font-weight: 500;
+      }
+
+      .button:hover {
+        background-color: #1d4ed8;
+      }
+
+      .button.outline {
+        background-color: transparent;
+        color: #2563eb;
+      }
+
+      .button.outline:hover {
+        background-color: #f0f9ff;
+      }
+
+      .code-block {
+        background-color: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 1rem;
+        margin: 1rem 0;
+      }
+
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+        font-family: monospace;
+      }
+
+      .function-boxes {
+        display: flex;
+        justify-content: space-around;
+        margin: 1rem 0;
+      }
+
+      .function-box {
+        border: 1px solid #e9ecef;
+        padding: 0.5rem;
+        border-radius: 6px;
+        text-align: center;
+      }
+
+      .function-box.highlighted {
+        background-color: #fef9c3;
+        transition: background-color 0.3s;
+      }
+
+      .small-text {
+        font-size: 0.75rem;
+        color: #666;
+      }
+
+      .output-container {
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 1rem;
+        height: 160px;
+        overflow-y: auto;
+      }
+
+      .output-title {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title">Interactive Function Visualization</h2>
+      </div>
+      <div class="card-content">
+        <div class="space-y-4">
+          <div class="button-group">
+            <button class="button" onclick="walk()">Call walk()</button>
+            <button class="button" onclick="run()">Call run()</button>
+            <button class="button" onclick="move()">Call move()</button>
+            <button class="button outline" onclick="clearOutput()">
+              Clear Output
+            </button>
+          </div>
+
+          <div class="code-block">
+            <pre><code>function walk() {
+  console.log("walk");
+}
+
+let run = function () {
+  console.log("run");
+};
+
+let move = run;</code></pre>
+          </div>
+
+          <div class="function-boxes" id="functionBoxes">
+            <div class="function-box" id="walkBox">walk</div>
+            <div class="function-box" id="runBox">run</div>
+            <div class="function-box" id="moveBox">
+              move
+              <div class="small-text">(points to run)</div>
+            </div>
+          </div>
+
+          <div class="output-container">
+            <div class="output-title">Output:</div>
+            <div id="output"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const output = document.getElementById("output");
+
+      function addOutput(message) {
+        const div = document.createElement("div");
+        div.textContent = message;
+        output.appendChild(div);
+      }
+
+      function clearOutput() {
+        output.innerHTML = "";
+      }
+
+      function highlightFunction(funcName) {
+        const box = document.getElementById(`${funcName}Box`);
+        box.classList.add("highlighted");
+        setTimeout(() => {
+          box.classList.remove("highlighted");
+        }, 1000);
+      }
+
+      function walk() {
+        addOutput("walk");
+        highlightFunction("walk");
+      }
+
+      function run() {
+        addOutput("run");
+        highlightFunction("run");
+      }
+
+      const move = run;
+    </script>
+  </body>
+</html>
